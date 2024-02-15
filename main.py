@@ -3,7 +3,6 @@ logger.info("Starting...")
 
 import time
 import configparser
-import web_server_test as web_server
 
 if __name__ == '__main__':
     startTime = time.localtime(time.time())
@@ -14,7 +13,8 @@ if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read("server.ini")
     SERVER_PORT = int(config['SOCKETConfig']['Port'])
+
+    logger.debug(f"startTime: {startTime}")
+    logger.debug(f"strStartTime: {strStartTime}")
+    logger.debug(f"SERVER_PORT: {SERVER_PORT}")
     
-    web_server.start_server(SERVER_PORT)
-
-
