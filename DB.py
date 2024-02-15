@@ -13,7 +13,7 @@ class DB:
         self.tokenConn = sqlite3.connect(":memory:")
         self.tokenCur = self.tokenConn.cursor()
 
-        self.logger: logger = logger
+        self.logger = logger
 
         self.cur.execute("""CREATE TABLE IF NOT EXISTS casino (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,10 +34,10 @@ class DB:
         self.cur.execute("SELECT cash FROM casino WHERE id = ?", (id,))
         result = self.cur.fetchone()[0]
         result += deltaCash
-        self.cur.execute(f"UPDATE casino SET cash = ? WHERE id = {id}", (result))
+        self.cur.execute(f"UPDATE casino SET cash = ? WHERE id = {id}", (result,))
         self.conn.commit()
 
-    def Logining(self, username, password, logining=False, creatingToken=False):
+    def Logining(self, username, password, logining=False, creatingToken=False) -> list:
         self.cur.execute("SELECT password FROM casino WHERE username = ?", (username,))
         if password == self.cur.fetchone()[0]:
             if logining:
@@ -46,13 +46,15 @@ class DB:
                 if creatingToken:
                     token = self.creatingTokenDef(id)
                 self.logger.debug()
-            return True, token
+            return [True, token]
         else:
-            return False
+            return [False, None]
 
     def creatingTokenDef(self, id):
+        if id == 0:
+            id = id + 1
         token = secrets.token_hex(32)
-        results = self.tokenCur.execute("SELECT * FROM token WHERE id = ?", (id))
+        results = self.tokenCur.execute("SELECT * FROM token WHERE id = ?", (id,))
         if results.fetchone() is None:
             self.tokenCur.execute("INSERT INTO token (id, uToken) VALUES (?, ?)", (id, token))
         else:
@@ -72,3 +74,5 @@ class DB:
             self.logger.debug(f"{id} changed password")
         else:
             self.logger.debug(f"{id} the password change has been blocked. Invalid password")
+
+
