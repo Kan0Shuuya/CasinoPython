@@ -1,6 +1,6 @@
 # General dependencies
-loguru
+loguru==0.7.2
 
 # Web server dependencies
-fastapi
-uvicorn[standard]
+fastapi==0.109.2
+uvicorn[standard]==0.27.1
