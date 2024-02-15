@@ -9,7 +9,8 @@ if __name__ == '__main__':
     config = configparser.ConfigParser()
     logging.info(f"Initialization date: {strStartTime}")
     logging.info(f"Start SOCKET")
-
+    config.read("server.ini")
+    logging.info(f"Port:{config['SOCKETConfig']['Port']}")
 
 
 
