@@ -1,6 +1,7 @@
 import sqlite3
 import time
 import secrets
+from loguru import logger as lg
 
 #Я ненавижу писать запросы LMAO, т.к у нас нет никакого способа проверить работоспособность модуля, т.к нет самого казино.
 #Завтра, я буду тестить скрипт в консоси. так что код модуля БД у нас есть, а вот работает ли он вообще яхз.
@@ -13,7 +14,7 @@ class DB:
         self.tokenConn = sqlite3.connect(":memory:")
         self.tokenCur = self.tokenConn.cursor()
 
-        self.logger = logger
+        self.logger = lg
 
         self.cur.execute("""CREATE TABLE IF NOT EXISTS casino (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,21 +45,21 @@ class DB:
                 self.cur.execute(f"UPDATE casino SET dateLogin = ? WHERE username = ?", (time.ctime(), username))
                 self.conn.commit()
                 if creatingToken:
-                    token = self.creatingTokenDef(id)
-                self.logger.debug()
+                    # token = self.creatingTokenDef(id)
+                    token = ""
+                    raise NotImplementedError("Bro you dont have a fucking id :skull: Also stop naming variables \"id\" you are referencing an internal python func and breaking shit")
             return [True, token]
         else:
             return [False, None]
 
-    def creatingTokenDef(self, id):
-        if id == 0:
-            id = id + 1
+    @lg.catch
+    def creatingTokenDef(self, id_a):
         token = secrets.token_hex(32)
-        results = self.tokenCur.execute("SELECT * FROM token WHERE id = ?", (id,))
+        results = self.tokenCur.execute("SELECT * FROM token WHERE id = ?", (id_a,))
         if results.fetchone() is None:
-            self.tokenCur.execute("INSERT INTO token (id, uToken) VALUES (?, ?)", (id, token))
+            self.tokenCur.execute("INSERT INTO token (id, uToken) VALUES (?, ?)", (id_a, token))
         else:
-            self.tokenCur.execute("UPDATE token SET uToken = ? WHERE id = ?", (token, id))
+            self.tokenCur.execute("UPDATE token SET uToken = ? WHERE id = ?", (token, id_a))
         self.tokenConn.commit()
         return token
 
@@ -68,7 +69,7 @@ class DB:
         self.logger.debug(f"new user in DB, {username}")
 
     def changePassword(self, id, oldPassword, newPassword):
-        self.cur.execute("SELECT password FROM casino WHERE id = ?", (id))
+        self.cur.execute("SELECT password FROM casino WHERE id = ?", (id,))
         if oldPassword == self.cur.fetchone()[0]:
             self.cur.execute("UPDATE casino SET password = ? WHERE id = ?", (newPassword, id))
             self.logger.debug(f"{id} changed password")
