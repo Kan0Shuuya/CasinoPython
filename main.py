@@ -1,8 +1,9 @@
 from loguru import logger
-logger.info("Starting...")
-
 import time
 import configparser
+import sqlite3
+
+logger.info("Starting...")
 
 if __name__ == '__main__':
     startTime = time.localtime(time.time())
@@ -17,4 +18,5 @@ if __name__ == '__main__':
     logger.debug(f"startTime: {startTime}")
     logger.debug(f"strStartTime: {strStartTime}")
     logger.debug(f"SERVER_PORT: {SERVER_PORT}")
-    
+
+    logger.debug(f"Start DB...")
