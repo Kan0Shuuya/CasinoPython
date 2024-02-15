@@ -1,2 +1,6 @@
+# General dependencies
 loguru
-aiohttp[speedups]
+
+# Web server dependencies
+fastapi
+uvicorn[standard]
