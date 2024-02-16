@@ -56,6 +56,16 @@ class DB:
         data = dict(zip(columns, result))
         return data
 
+    def getNonSensitiveUserDataAsDict(self, username: str) -> dict | None:
+        self.cur.execute("SELECT username, cash, dateReg, dateLogin, muted, banned FROM casino WHERE username = ?",
+                         (username,))
+        result = self.cur.fetchone()
+        if not result:
+            return None
+        columns = [description[0] for description in self.cur.description]
+        data = dict(zip(columns, result))
+        return data
+
     def changePassword(self, username, oldPassword, newPassword):
         self.cur.execute("SELECT password FROM casino WHERE username = ?", (username,))
         res = self.cur.fetchone()[0]
