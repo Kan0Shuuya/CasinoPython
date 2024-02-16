@@ -1,10 +1,9 @@
 import unittest
-from unittest.mock import MagicMock
-from DB import DB
+from database import Database
 
 class TestDB(unittest.TestCase):
     def setUp(self):
-        self.db = DB(":memory:", MagicMock())
+        self.db = Database(":memory:")
 
     def test_changeCash(self):
         # Test initial cash value

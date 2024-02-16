@@ -8,7 +8,7 @@ from loguru import logger as lg
 #P.S: Хотел выебнуться и написать на английском комент, но решил не портить тебе зрение своим английским. По этому испорчу тебе его мои русским
 #P.P.S: Тяжело жить без подствеки ошибок в словах KEkw
 class DB:
-    def __init__(self, fileName:str, logger):
+    def __init__(self, fileName:str):
         self.conn = sqlite3.connect(fileName)
         self.cur = self.conn.cursor()
         self.tokenConn = sqlite3.connect(":memory:")
