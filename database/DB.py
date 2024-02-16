@@ -1,10 +1,10 @@
 import sqlite3
 import time
-import secrets
 from loguru import logger as lg
 
+
 class DB:
-    def __init__(self, fileName:str):
+    def __init__(self, fileName: str):
         self.conn = sqlite3.connect(fileName, check_same_thread=False)
         self.cur = self.conn.cursor()
 
@@ -28,17 +28,17 @@ class DB:
         self.cur.execute(f"UPDATE casino SET cash = ? WHERE username = ?", (result, username))
         self.conn.commit()
 
-
     def registration(self, username, password):
         self.cur.execute("SELECT username FROM casino WHERE username = ?", (username,))
         if self.cur.fetchone() is not None:
             return False
 
-        self.cur.execute(f"INSERT INTO casino (username, password, cash, dateReg, dateLogin, muted, banned) VALUES (?, ?, ?, ?, ?, ?, ?)", (username, password, 1000, time.ctime(), time.ctime(), False, False))
+        self.cur.execute(
+            f"INSERT INTO casino (username, password, cash, dateReg, dateLogin, muted, banned) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (username, password, 1000, time.ctime(), time.ctime(), False, False))
         self.conn.commit()
         self.logger.debug(f"new user in DB, {username}")
         return True
-
 
     def getPassword(self, username: str) -> str | None:
         self.cur.execute("SELECT password FROM casino WHERE username = ?", (username,))
@@ -46,7 +46,6 @@ class DB:
         if not result:
             return None
         return result
-
 
     def getAllUserDataAsDict(self, username: str) -> dict | None:
         self.cur.execute("SELECT * FROM casino WHERE username = ?", (username,))
@@ -56,7 +55,6 @@ class DB:
         columns = [description[0] for description in self.cur.description]
         data = dict(zip(columns, result))
         return data
-
 
     def changePassword(self, username, oldPassword, newPassword):
         self.cur.execute("SELECT password FROM casino WHERE username = ?", (username,))

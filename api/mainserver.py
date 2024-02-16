@@ -12,7 +12,7 @@ import uvicorn
 # ===[CONSTANT DECLARATION START]===
 # To generate a new one run: openssl rand -hex 32
 # Ideally should be rotated once in a while
-SECRET_KEY = "c61634b5c9f1c5243e44f718dd9a8de805e6a394a405f1be523f490522e2ce25" 
+SECRET_KEY = "c61634b5c9f1c5243e44f718dd9a8de805e6a394a405f1be523f490522e2ce25"
 TOKEN_EXPIRE_TIMEDELTA_MINUTES = 24 * 60
 app = FastAPI()
 db = Database(":memory:")
@@ -53,16 +53,17 @@ def obtain_new_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depe
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     token = generate_token(form_data.username)
     return Token(access_token=token, token_type="bearer")
+
 
 @app.get("/me")
 def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     cred_exception = HTTPException(
-                status_code=401,
-                detail="Couldn't validate credentials",
-                headers={"WWW-Authenticate": "Bearer"}
+        status_code=401,
+        detail="Couldn't validate credentials",
+        headers={"WWW-Authenticate": "Bearer"}
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, "HS256")
@@ -74,18 +75,20 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     user = db.getAllUserDataAsDict(username)
     if not user:
         raise cred_exception
-    
+
     return user
+
 
 @app.post("/register")
 def create_user(username: str, password_plaintext: str):
     result = db.registration(username, hash_password(password_plaintext))
     if not result:
         raise HTTPException(status_code=418, detail="жуй хуй")
-    
+
 
 def run(port: int):
     uvicorn.run(app, port=port)
+
 
 if __name__ == "__main__":
     raise NotImplementedError("Not supposed to be ran standalone")

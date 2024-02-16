@@ -1,7 +1,8 @@
-from loguru import logger
-import time
 import configparser
-import sqlite3
+import time
+
+from loguru import logger
+
 from api import mainserver
 
 logger.info("Starting...")
