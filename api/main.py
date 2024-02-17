@@ -1,25 +1,27 @@
-from main import logger  # TODO: Import from main file to retain settings
+import configparser
+from datetime import datetime, timedelta
+from typing import Annotated
+import uvicorn
 from fastapi import FastAPI, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from datetime import datetime, timedelta
-from database import *
-from passlib.context import CryptContext
 from jose import jwt, JWTError
-from typing import Annotated
+from passlib.context import CryptContext
 from api.exceptions import *
-import uvicorn
-import config as cfg
+from database import *
+from main import logger  # TODO: Import from main file to retain settings
 
 # ===[CONSTANT DECLARATION START]===
 # To generate a new one: openssl rand -hex 32
 # Ideally should be rotated once in a while
 # Also is supposed to be stored in a secure place, not in the code, and DEFINITELY not in the repo
 # but who cares lmao
-SECRET_KEY = "c61634b5c9f1c5243e44f718dd9a8de805e6a394a405f1be523f490522e2ce25"
+cfgparse = configparser.ConfigParser()
+cfg = cfgparse.read("/persist/secrets.ini")
+SECRET_KEY = cfg["secrets"]["SECRET_KEY"]
 TOKEN_EXPIRE_TIMEDELTA_MINUTES = 24 * 60
 app = FastAPI()
 app.logger = logger
-db = Database("database/db.db")
+db = Database("/persist/db.db")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 cryptcontext = CryptContext(schemes=["bcrypt"])
 # ===[CONSTANT DECLARATION END]===
@@ -105,10 +107,7 @@ def create_user(username: str, password_plaintext: str):
         raise HTTPException(status_code=418, detail="жуй хуй")
 
 
-from api.rolls import *
-
-
-def run(host: str, port: int, root_path: str):
+def run(host: str, port: int):
     uvicorn.run(app, host=host, port=port)
 
 
