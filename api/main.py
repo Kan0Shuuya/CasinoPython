@@ -104,8 +104,11 @@ def create_user(username: str, password_plaintext: str):
         raise HTTPException(status_code=418, detail="жуй хуй")
 
 
+from api.rolls import *
+
+
 def run(host: str, port: int):
-    uvicorn.run(app, host=host, port=port)
+    uvicorn.run(app, port=port)
 
 
 if __name__ == "__main__":

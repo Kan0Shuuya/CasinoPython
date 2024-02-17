@@ -15,3 +15,11 @@ IncorrectUsernameOrPasswordException = HTTPException(
     detail="Incorrect username or password",
     headers={"WWW-Authenticate": "Bearer"}
 )
+InvalidBetException = HTTPException(
+    status_code=400,
+    detail="Invalid bet"
+)
+GenericServerErrorException = HTTPException(
+    status_code=500,
+    detail="Unknown error occurred"
+)
