@@ -1,4 +1,4 @@
-from loguru import logger  # TODO: Import from main file to retain settings
+from main import logger  # TODO: Import from main file to retain settings
 from fastapi import FastAPI, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import datetime, timedelta
@@ -18,12 +18,13 @@ SECRET_KEY = "c61634b5c9f1c5243e44f718dd9a8de805e6a394a405f1be523f490522e2ce25"
 TOKEN_EXPIRE_TIMEDELTA_MINUTES = 24 * 60
 app = FastAPI()
 app.logger = logger
-db = Database(":memory:")
+db = Database("database/db.db")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 cryptcontext = CryptContext(schemes=["bcrypt"])
-
-
 # ===[CONSTANT DECLARATION END]===
+
+logger.debug("Initializing API structures...")
+
 
 def hash_password(password_plaintext: str) -> str:
     """Hashes a password using bcrypt. Returns a hash."""
@@ -103,8 +104,8 @@ def create_user(username: str, password_plaintext: str):
         raise HTTPException(status_code=418, detail="жуй хуй")
 
 
-def run(port: int):
-    uvicorn.run(app, port=port)
+def run(host: str, port: int):
+    uvicorn.run(app, host=host, port=port)
 
 
 if __name__ == "__main__":

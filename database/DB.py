@@ -1,6 +1,6 @@
 import sqlite3
 import time
-from loguru import logger as lg
+from main import logger as lg
 
 
 class DB:
@@ -9,7 +9,7 @@ class DB:
         self.cur = self.conn.cursor()
 
         self.logger = lg
-
+        self.logger.debug("Initializing DB...")
         self.cur.execute("""CREATE TABLE IF NOT EXISTS casino (
         username TEXT PRIMARY KEY,
         password TEXT,
@@ -37,7 +37,7 @@ class DB:
             f"INSERT INTO casino (username, password, cash, dateReg, dateLogin, muted, banned) VALUES (?, ?, ?, ?, ?, ?, ?)",
             (username, password, 1000, time.ctime(), time.ctime(), False, False))
         self.conn.commit()
-        self.logger.debug(f"new user in DB, {username}")
+        self.logger.debug(f"New user: {username}")
         return True
 
     def getPassword(self, username: str) -> str | None:
@@ -57,7 +57,7 @@ class DB:
         return data
 
     def getNonSensitiveUserDataAsDict(self, username: str) -> dict | None:
-        self.cur.execute("SELECT username, cash, dateReg, dateLogin, muted, banned FROM casino WHERE username = ?",
+        self.cur.execute("SELECT username, cash, muted, banned FROM casino WHERE username = ?",
                          (username,))
         result = self.cur.fetchone()
         if not result:
@@ -75,5 +75,5 @@ class DB:
             self.logger.debug(f"{username} changed password")
             return True
         else:
-            self.logger.debug(f"{username} the password change has been blocked. Invalid password")
+            self.logger.debug(f"PW change failed for {username}: Invalid old password")
             return False
