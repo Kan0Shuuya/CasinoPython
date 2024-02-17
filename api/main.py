@@ -16,8 +16,8 @@ from main import logger  # TODO: Import from main file to retain settings
 # Also is supposed to be stored in a secure place, not in the code, and DEFINITELY not in the repo
 # but who cares lmao
 cfgparse = configparser.ConfigParser()
-cfg = cfgparse.read("/persist/secrets.ini")
-SECRET_KEY = cfg["secrets"]["SECRET_KEY"]
+cfgparse.read("/persist/secrets.ini")
+SECRET_KEY = cfgparse["secrets"]["SECRET_KEY"]
 TOKEN_EXPIRE_TIMEDELTA_MINUTES = 24 * 60
 app = FastAPI()
 app.logger = logger
