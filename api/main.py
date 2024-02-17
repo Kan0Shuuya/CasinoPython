@@ -8,6 +8,7 @@ from jose import jwt, JWTError
 from typing import Annotated
 from api.exceptions import *
 import uvicorn
+import config as cfg
 
 # ===[CONSTANT DECLARATION START]===
 # To generate a new one: openssl rand -hex 32
@@ -107,8 +108,8 @@ def create_user(username: str, password_plaintext: str):
 from api.rolls import *
 
 
-def run(host: str, port: int):
-    uvicorn.run(app, port=port)
+def run(host: str, port: int, root_path: str):
+    uvicorn.run(app, host=host, port=port)
 
 
 if __name__ == "__main__":
