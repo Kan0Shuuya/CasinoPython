@@ -1,4 +1,3 @@
-import configparser
 from datetime import datetime, timedelta
 from typing import Annotated
 import uvicorn
@@ -9,15 +8,11 @@ from passlib.context import CryptContext
 from api.exceptions import *
 from database import *
 from main import logger  # TODO: Import from main file to retain settings
+import sys
 
 # ===[CONSTANT DECLARATION START]===
-# To generate a new one: openssl rand -hex 32
-# Ideally should be rotated once in a while
-# Also is supposed to be stored in a secure place, not in the code, and DEFINITELY not in the repo
-# but who cares lmao
-cfgparse = configparser.ConfigParser()
-cfgparse.read("/persist/secrets.ini")
-SECRET_KEY = cfgparse["secrets"]["SECRET_KEY"]
+sys.path.insert("/persist")
+SECRET_KEY = "6f1ba5597ebd52c859e42e176ab526baa3fb8d9ad2f848383397e3f2f68a39d8"
 TOKEN_EXPIRE_TIMEDELTA_MINUTES = 24 * 60
 app = FastAPI()
 app.logger = logger
